@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{js,jsx}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx,mdx}'], // 更新 content 配置
   darkMode: 'class',
   plugins: [require('@tailwindcss/typography')],
   theme: {
@@ -300,4 +300,4 @@ module.exports = {
       },
     }),
   },
-}
+};

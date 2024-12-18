@@ -1,36 +1,56 @@
-import nextMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
-import rehypePrism from '@mapbox/rehype-prism'
+import remarkGfm from 'remark-gfm';
+import rehypePrism from '@mapbox/rehype-prism';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['jsx', 'mdx'],
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    newNextLinkBehavior: true,
     scrollRestoration: true,
   },
   async redirects() {
     return [
-      {
+      /* {
         source: '/',
         destination: '/home',
         permanent: true,
-      },
-    ]
+      }, */
+    ];
   },
   images: {
-    domains: ['img.dakaiai.app', 'static.dakaiai.app', 'favicon.im'],  // 允许外链图片域名
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.dakaiai.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.dakaiai.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'favicon.im',
+      },
+    ],
   },
-}
-
-const withMDX = nextMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypePrism],
+  // 使用 webpack 配置 MDX
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.mdx$/,
+      use: [
+        options.defaultLoaders.babel,
+        {
+          loader: '@mdx-js/loader',
+          options: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [rehypePrism],
+            providerImportSource: '@mdx-js/react',
+          },
+        },
+      ],
+    });
+    return config;
   },
-})
+};
 
-export default withMDX(nextConfig)
+export default nextConfig;
